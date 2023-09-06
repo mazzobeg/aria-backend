@@ -1,4 +1,4 @@
-from .models import Article
+from .app.models import Article
 from .app import db
 
 class ArticleRepository:

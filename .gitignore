@@ -1,1 +1,13 @@
+# BLACKLIST ALL
+/*
+# WHITELIST
+!/*/
+!/README.md
+!/requirements.txt
+!/run*
+# BLACKLIST
+tmp
+.*
 *pycache*
+instance
+env
