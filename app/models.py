@@ -6,16 +6,16 @@ db:SQLAlchemy = application.db
 
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    titre = db.Column(db.String(100), nullable=False)
-    contenu = db.Column(db.Text, nullable=False)
-    sommaire = db.Column(db.String(500))
-    etat = db.Column(db.String(50))
-    avis = db.Column(db.String(200))
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    summary = db.Column(db.String(500))
+    state = db.Column(db.String(50))
+    grade = db.Column(db.String(200))
 
-    def __init__(self, titre, contenu, sommaire=None, etat=None, avis=None):
-        self.id = hash(titre)
-        self.titre = titre
-        self.contenu = contenu
-        self.sommaire = sommaire
-        self.etat = etat
-        self.avis = avis
+    def __init__(self, title, content, summary=None, state=None, grade=None):
+        self.id = hash(title)
+        self.title = title
+        self.content = content
+        self.summary = summary
+        self.state = state
+        self.grade = grade

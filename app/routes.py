@@ -10,8 +10,8 @@ app:Application = Application().app
 @app.route('/articles', methods=['GET'])
 def get_all_articles():
     articles = Article.query.all()
-    articles_data = [{'id': article.id, 'titre': article.titre, 'contenu': article.contenu,
-                      'sommaire': article.sommaire, 'etat': article.etat, 'avis': article.avis}
+    articles_data = [{'id': article.id, 'title': article.title, 'content': article.content,
+                      'summary': article.summary, 'state': article.state, 'grade': article.grade}
                      for article in articles]
     return render_template('articles.html',  articles=articles_data)
 
