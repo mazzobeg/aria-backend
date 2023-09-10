@@ -20,18 +20,25 @@ class SingletonMeta(type):
             cls._instances[cls] = instance
         return cls._instances[cls]
 
+class Scraper:
+    def __init__(self) -> None:
+        self.lock = False
+
 class Application(metaclass=SingletonMeta):
     app:Flask = None
     db:SQLAlchemy = None
+    scraper:Scraper = None
 
     def __init__(self, database_uri, testing=False) -> None:
         self.app = Flask(__name__)
         self.app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
         self.app.config['TESTING'] = testing
         self.db = SQLAlchemy(app=self.app)
+        self.scraper = Scraper()
     
     def init(self):
         from app import models
         with self.app.app_context():
             self.db.create_all()
         from app import routes
+
