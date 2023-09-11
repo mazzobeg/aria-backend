@@ -10,10 +10,15 @@ app:Application = Application().app
 @app.route('/articles', methods=['GET'])
 def get_all_articles():
     articles = Article.query.all()
-    articles_data = [{'id': article.id, 'title': article.title, 'content': article.content,
-                      'summary': article.summary, 'state': article.state, 'grade': article.grade}
+    articles_data = [{'id': article.id, 'title': article.title, 'content': article.content, 'link': article.link,
+                      'summary': article.summary, 'grade': article.grade}
                      for article in articles]
     return render_template('articles.html',  articles=articles_data)
+
+@app.route('/articles/<int:article_id>', methods=['GET'])
+def get_article_by_id(article_id):
+    article = Application().db.get_or_404(Article, article_id)
+    return render_template("article.html", article=article)
 
 # @app.route('/articles/scrapers', methods=['GET'])
 # def run_scrapers_on_articles():
@@ -46,10 +51,11 @@ def get_control_scraper_state() :
 
 @app.route('/control/article', methods=['PUT'])
 def add_article():
+    print('Données reçues')
     data = request.get_json()
     print('Données reçues')
-    if 'title' in data.keys() and 'content' in data.keys() :
-        services.add_article(title = data['title'] , content=data['content'])
+    if 'title' in data.keys() and 'content' in data.keys() and 'link' in data.keys() :
+        services.add_article(title = data['title'] , content=data['content'], link=data['link'])
         reponse = {'message': 'Requête PUT réussie!', 'donnees': data}
         return jsonify(reponse), 200
     else :

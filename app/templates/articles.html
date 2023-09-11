@@ -21,7 +21,7 @@
 
         <div id="actions" class="p-4">
             <button id = "action-scraper" onclick="triggerScrapers(this)" class="btn btn-primary" type="submit">Scrap'!</button>
-            <span id ="actions-label"></span>
+            <button id = "action-summarize" onclick="triggerSummarizing(this)" class="btn btn-primary" type="submit">Summarize!</button>
         </div>
 
         <div class="card-body">
@@ -30,35 +30,28 @@
                     <thead>
                         <tr>
                             <th>Titre</th>
-                            <th>Voir</th>
                             <th>Résumé</th>
-                            <th>Etat</th>
                             <th>Avis</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
                             <th>Titre</th>
-                            <th>Voir</th>
                             <th>Résumé</th>
-                            <th>Etat</th>
                             <th>Avis</th>
                         </tr>
                     </tfoot>
                     <tbody>
                         {% for article in articles %}
                         <tr>
-                            <td><a href="{{ article.link }}">
+                            <td><a href="/articles/{{article.id}}">
                                     {{ article.title }}</a> </td>
-                            <td>
-                                Voir
-                            </td>
                             <td>{{ article.summary }}</td>
                             <td>
-                                {% include 'partials/article_select_state.html' %}
-                            </td>
-                            <td>
-                                {% include 'partials/article_select_opinion.html' %}
+                                <button class="btn btn-success"><i class="far fa-smile"></i></i></button>
+                                <button class="btn btn-warning"><i class="far fa-meh"></i></button>
+                                <button class="btn btn-danger"><i class="far fa-frown"></i></i></button>
+                                <button class="btn btn-primary"><i class="fas fa-envelope-open-text"></i></button>
                             </td>
                         </tr>
 

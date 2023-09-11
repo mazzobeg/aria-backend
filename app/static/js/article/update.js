@@ -7,14 +7,18 @@ document.querySelectorAll('.custom-select').forEach(element => element.addEventL
 }));
 
 function updateDatabase(option) {
-    // Envoi de la requête AJAX à votre serveur Flask pour mettre à jour la base de données
-    // Vous pouvez utiliser la bibliothèque Axios ou Fetch pour effectuer la requête
-    // Par exemple, en utilisant Axios :
-    axios.post('/update_database', { selectedOption: option })
+    fetch("/")
         .then(function (response) {
-            // Gérer la réponse du serveur si nécessaire
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                throw new Error('Échec de la requête');
+            }
+        })
+        .then(function (data) {
+            console.log(data);
         })
         .catch(function (error) {
-            // Gérer les erreurs si nécessaire
-        });
+            console.error('Erreur :', error);
+    });
 }
