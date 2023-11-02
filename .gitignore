@@ -14,3 +14,4 @@ tmp
 instance
 env
 /scrapers
+*.log
