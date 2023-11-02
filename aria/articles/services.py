@@ -1,35 +1,21 @@
-from transformers import pipeline
-from nltk.tokenize import sent_tokenize
-from aria.articles.models import Article
-import requests
+"""
+This module contains the Summarizer_Mode class and functions for summarizing text.
+"""
 import logging as log
+import requests
+from nltk.tokenize import sent_tokenize
+from transformers import pipeline
 
-class Summarizer_Mode:
-    FAST="fast"
-    CONSERVATIVE="conservative"
+class SummarizerMode:
+    """
+    Enum for Summarizer Modes
+    """
 
-def summarize_text_fast(full_text:str) -> str:
-    log.debug(f'Summarize {full_text}')
-    chunks = sent_tokenize(full_text)
-    summary = []
-    chunk_length = 25
-    for i in range(0, len(chunks), chunk_length):
-        sentence = ' '.join(chunks[i:i+chunk_length])
-        if len(full_text) > 0 :
-            summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-            max_length_percentage = int(0.1*len(sentence))
-            max_length_fix = 200
-            max_length = max_length_fix if max_length_percentage > max_length_fix  else max_length_percentage
-            min_length_percentage = int(0.05*len(sentence))
-            min_length_fix = 100
-            min_length = min_length_fix if min_length_percentage > min_length_fix  else min_length_percentage
-            try:
-                summary.append(summarizer(sentence, max_length = max_length , min_length=min_length, do_sample=False)[0]['summary_text'])
-            except IndexError:
-                pass
-    return ' '.join(summary)
+    FAST = "fast"
+    CONSERVATIVE = "conservative"
 
-def summarize_text_conservative(full_text:str) -> str :
+
+def summarize_text_fast(full_text: str) -> str:
     """
     Summarizes a long piece of text into smaller chunks using the BART model from Facebook AI.
 
@@ -39,7 +25,41 @@ def summarize_text_conservative(full_text:str) -> str :
     Returns:
         str: A summarized version of the input text.
     """
-    log.debug(f'convert {full_text}')
+    log.debug("Summarize %s", full_text)
+    chunks = sent_tokenize(full_text)
+    summary = []
+    chunk_length = 25
+    for i in range(0, len(chunks), chunk_length):
+        sentence = " ".join(chunks[i : i + chunk_length])
+        if sentence:
+            summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+            max_length = min(int(0.1 * len(sentence)), 200)
+            min_length = min(int(0.05 * len(sentence)), 100)
+            try:
+                summary.append(
+                    summarizer(
+                        sentence,
+                        max_length=max_length,
+                        min_length=min_length,
+                        do_sample=False,
+                    )[0]["summary_text"]
+                )
+            except IndexError:
+                pass
+    return " ".join(summary)
+
+
+def summarize_text_conservative(full_text: str) -> str:
+    """
+    Summarizes a long piece of text into smaller chunks using the BART model from Facebook AI.
+
+    Args:
+        full_text (str): The full text to be summarized.
+
+    Returns:
+        str: A summarized version of the input text.
+    """
+    log.debug("convert %s", full_text)
     chunks = sent_tokenize(full_text)
     summary = []
     chunk_length = 25
@@ -49,38 +69,63 @@ def summarize_text_conservative(full_text:str) -> str :
             chunk_length = 25
             chunk_idx_start += 1
             continue
-        sentence = ' '.join(chunks[chunk_idx_start:chunk_idx_start+chunk_length])
-        if len(full_text) > 0 :
+        sentence = " ".join(chunks[chunk_idx_start : chunk_idx_start + chunk_length])
+        if sentence:
             summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-            max_length_percentage = int(0.1*len(sentence))
-            max_length_fix = 200
-            max_length = max_length_fix if max_length_percentage > max_length_fix  else max_length_percentage
-            min_length_percentage = int(0.05*len(sentence))
-            min_length_fix = 100
-            min_length = min_length_fix if min_length_percentage > min_length_fix  else min_length_percentage
+            max_length = min(int(0.1 * len(sentence)), 200)
+            min_length = min(int(0.05 * len(sentence)), 100)
             try:
-                summary.append(summarizer(sentence, max_length = max_length , min_length=min_length, do_sample=False)[0]['summary_text'])
+                summary.append(
+                    summarizer(
+                        sentence,
+                        max_length=max_length,
+                        min_length=min_length,
+                        do_sample=False,
+                    )[0]["summary_text"]
+                )
                 chunk_idx_start += chunk_length
                 chunk_length = 25
             except IndexError:
-                chunk_length = int(chunk_length/2)
-    return ' '.join(summary)
+                chunk_length = int(chunk_length / 2)
+    return " ".join(summary)
 
-def summarize_text(full_text:str, summarizer_mode:Summarizer_Mode=Summarizer_Mode.CONSERVATIVE) -> str :
-    if summarizer_mode == Summarizer_Mode.FAST :
+
+def summarize_text(
+    full_text: str, summarizer_mode: SummarizerMode = SummarizerMode.CONSERVATIVE
+) -> str:
+    """
+    Summarizes a long piece of text based on the given summarizer mode.
+
+    Args:
+        full_text (str): The full text to be summarized.
+        summarizer_mode (SummarizerMode): The summarizer mode to be used.
+
+    Returns:
+        str: A summarized version of the input text.
+    """
+    if summarizer_mode == SummarizerMode.FAST:
         return summarize_text_fast(full_text)
-    elif summarizer_mode == Summarizer_Mode.CONSERVATIVE :
+    if summarizer_mode == SummarizerMode.CONSERVATIVE:
         return summarize_text_conservative(full_text)
-    else :
-        raise Exception('Invalid summarizer mode.')
+    raise ValueError("Invalid summarizer mode.")
 
-def summarize_articles(articles_id, articles_summary, callback_endpoint:str):
-    if (len(articles_id) != len(articles_summary)) :
-        raise Exception('articles_id and articles_summary must have the same length.')
-    for i in range(0, len(articles_summary)) :
-        summary = summarize_text(articles_summary[i])
-        callback_endpoint = callback_endpoint.replace('localhost', '127.0.0.1')
+
+def summarize_articles(articles_id, articles_summary, callback_endpoint: str):
+    """
+    Summarizes a list of articles and sends the summaries to a callback endpoint.
+
+    Args:
+        articles_id (list): The IDs of the articles to be summarized.
+        articles_summary (list): The summaries of the articles to be summarized.
+        callback_endpoint (str): The callback endpoint to send the summaries to.
+    """
+    if len(articles_id) != len(articles_summary):
+        raise ValueError("articles_id and articles_summary must have the same length.")
+    for i, summary in enumerate(articles_summary):
+        summary_text = summarize_text(summary)
+        callback_endpoint = callback_endpoint.replace("localhost", "127.0.0.1")
         log.info(callback_endpoint)
-        requests.post(callback_endpoint, json={'id': articles_id[i], 'summary': summary})
-        log.info(f'Article {articles_id[i]} summarized.')
-
+        requests.post(
+            callback_endpoint, json={"id": articles_id[i], "summary": summary_text}, timeout=10
+        )
+        log.info("Article %s summarized.", articles_id[i])

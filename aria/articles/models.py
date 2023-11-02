@@ -1,29 +1,41 @@
-from aria import db
+"""
+This module contains the ArticleGrade Enum and the Article model.
+"""
 import hashlib
 from enum import Enum
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped
+from aria import db
 
 class ArticleGrade(Enum):
-    MEH="MEH"
-    SMILE="SMILE"
-    FROWN="FROWN"
+    """
+    Enum for Article Grades
+    """
+    MEH = "MEH"
+    SMILE = "SMILE"
+    FROWN = "FROWN"
+
     @classmethod
-    def from_text(cls, text:str):
+    def from_text(cls, text: str):
+        """
+        Returns the ArticleGrade corresponding to the given text.
+        """
         uppered_text = text.upper()
-        if uppered_text in [v.value for v in cls] :
+        if uppered_text in [v.value for v in cls]:
             return cls(uppered_text)
-        else :
-            raise ValueError("Value not allowed.")
+        raise ValueError("Value not allowed.")
 
 class Article(db.Model):
-    id: Mapped[str] = mapped_column(primary_key=True)
-    title: Mapped[str] = mapped_column(nullable=False)
-    link: Mapped[str] = mapped_column(nullable=False)
-    content: Mapped[str] = mapped_column(nullable=False)
-    summary: Mapped[str] = mapped_column(nullable=True)
-    grade: Mapped[ArticleGrade] = mapped_column(nullable=True)
+    """
+    Model for Articles
+    """
+    id: Mapped[str] = db.Column(db.String, primary_key=True)
+    title: Mapped[str] = db.Column(db.String, nullable=False)
+    link: Mapped[str] = db.Column(db.String, nullable=False)
+    content: Mapped[str] = db.Column(db.String, nullable=False)
+    summary: Mapped[str] = db.Column(db.String, nullable=True)
+    grade: Mapped[ArticleGrade] = db.Column(db.Enum(ArticleGrade), nullable=True)
 
-    def __init__(self, title, link:str, content, summary=None, grade:ArticleGrade=None):
+    def __init__(self, title, link: str, content, summary=None, grade: ArticleGrade = None):
         self.id = hashlib.md5(link.encode('utf-8')).hexdigest()
         self.title = title
         self.link = link

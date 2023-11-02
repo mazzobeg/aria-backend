@@ -1,32 +1,28 @@
 """
-Init database
-Create app
+This module contains the Flask application factory and the database initialization command.
 """
-
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask.cli import with_appcontext
-from sqlalchemy.orm import DeclarativeBase
-import click
-import logging as log
 from threading import Thread
+from flask import Flask
+from flask.cli import with_appcontext
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import declarative_base
+import click
 
-log.basicConfig(level=log.DEBUG)
+BASE = declarative_base()
+DB = SQLAlchemy(model_class=BASE)
 
-class Base(DeclarativeBase):
-    pass
-
-db = SQLAlchemy(model_class=Base)
-
-def create_app(test_config = None):
+def create_app(test_config=None):
+    """
+    Application factory function.
+    """
     app = Flask(__name__)
 
-    if test_config is None :
+    if test_config is None:
         app.config.from_pyfile("config.py", silent=True)
-    else :
+    else:
         app.config.update(test_config)
-    
-    db.init_app(app)
+
+    DB.init_app(app)
     app.cli.add_command(init_db_cmd)
 
     from aria.celery.core import my_monitor, celery
@@ -44,11 +40,17 @@ def create_app(test_config = None):
     return app
 
 def init_db():
-    db.drop_all()
-    db.create_all()
+    """
+    Initialize the database.
+    """
+    DB.drop_all()
+    DB.create_all()
 
 @click.command("init-db")
 @with_appcontext
 def init_db_cmd():
+    """
+    Database initialization command.
+    """
     init_db()
-    click.echo("Database intialized.")
+    click.echo("Database initialized.")
