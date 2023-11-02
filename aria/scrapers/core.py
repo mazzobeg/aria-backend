@@ -4,9 +4,9 @@ This module contains the core functionality for creating and registering scraper
 import os
 import json
 import importlib.util
+from flask import current_app
 from aria import DB as db
 from aria.scrapers.models import Scraper
-from flask import current_app
 
 
 def create_scrapers(path: str) -> list[Scraper]:
@@ -40,7 +40,6 @@ def register_scrapers():
     """
     Register all scrapers in the database.
     """
-    # TODO replace hardcoded path by a config variable
     scrapers_path = current_app.config["SCRAPERS_PATH"]
     scrapers = create_scrapers(scrapers_path)
     # register all scrapers in database if not already registered

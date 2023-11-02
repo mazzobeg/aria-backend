@@ -11,6 +11,11 @@ from sqlalchemy.orm import DeclarativeBase
 import click
 
 class Base(DeclarativeBase):
+    """
+    Base class for SQLAlchemy models.
+    """
+    # pylint: disable=R0903
+    # pylint: disable=W0107
     pass
 
 DB = SQLAlchemy(model_class=Base)
