@@ -6,7 +6,8 @@ from aria.articles.models import Article
 
 dashboard_bp = Blueprint("dashboard", __name__)
 
-@dashboard_bp.route('/dashboard')
+
+@dashboard_bp.route("/dashboard")
 def dashboard():
     """
     Route to display the dashboard.
@@ -18,8 +19,8 @@ def dashboard():
     unclassified_articles = Article.query.filter(Article.grade is None).all()
     unclassified_article_number = len(unclassified_articles)
     data = {
-        'article_number' : article_number,
-        'unclassified_article_number' : unclassified_article_number,
-        'last_scraper_trigger' : 'N/A',
+        "article_number": article_number,
+        "unclassified_article_number": unclassified_article_number,
+        "last_scraper_trigger": "N/A",
     }
-    return render_template('dashboard.html', data=data)
+    return render_template("dashboard.html", data=data)

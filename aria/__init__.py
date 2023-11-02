@@ -1,6 +1,8 @@
 """
 This module contains the Flask application factory and the database initialization command.
 """
+# pylint: disable=R0401
+# pylint: disable=C0415
 from threading import Thread
 from flask import Flask
 from flask.cli import with_appcontext
@@ -10,6 +12,7 @@ import click
 
 BASE = declarative_base()
 DB = SQLAlchemy(model_class=BASE)
+
 
 def create_app(test_config=None):
     """
@@ -26,6 +29,7 @@ def create_app(test_config=None):
     app.cli.add_command(init_db_cmd)
 
     from aria.celery.core import my_monitor, celery
+
     Thread(target=my_monitor, args=(celery,), daemon=True).start()
 
     # Load blueprints
@@ -33,11 +37,13 @@ def create_app(test_config=None):
     from aria.articles.views import articles_blueprint
     from aria.dashboard.views import dashboard_bp
     from aria.views import root
+
     app.register_blueprint(scrapers_blueprint)
     app.register_blueprint(articles_blueprint)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(root)
     return app
+
 
 def init_db():
     """
@@ -45,6 +51,7 @@ def init_db():
     """
     DB.drop_all()
     DB.create_all()
+
 
 @click.command("init-db")
 @with_appcontext

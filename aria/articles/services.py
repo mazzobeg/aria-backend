@@ -1,10 +1,12 @@
 """
 This module contains the Summarizer_Mode class and functions for summarizing text.
 """
+# pylint: disable=R0903
 import logging as log
 import requests
 from nltk.tokenize import sent_tokenize
 from transformers import pipeline
+
 
 class SummarizerMode:
     """
@@ -126,6 +128,8 @@ def summarize_articles(articles_id, articles_summary, callback_endpoint: str):
         callback_endpoint = callback_endpoint.replace("localhost", "127.0.0.1")
         log.info(callback_endpoint)
         requests.post(
-            callback_endpoint, json={"id": articles_id[i], "summary": summary_text}, timeout=10
+            callback_endpoint,
+            json={"id": articles_id[i], "summary": summary_text},
+            timeout=10,
         )
         log.info("Article %s summarized.", articles_id[i])
