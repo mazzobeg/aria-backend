@@ -5,9 +5,12 @@
 !/README.md
 !/requirements.txt
 !/run*
+!config.py
+!/aria/*
 # BLACKLIST
 tmp
 .*
 *pycache*
 instance
 env
+/scrapers

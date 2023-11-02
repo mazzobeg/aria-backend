@@ -1,0 +1,83 @@
+{%extends 'base.html'%}
+
+{%block title%} {%endblock%}
+
+{%block content%}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Articles</h6>
+        </div>
+
+        <div id="actions" class="p-4 bg-secondary">
+            <button disabled id="action-summarize" onclick="triggerSummarization(this)" class="btn btn-primary"
+                type="submit">
+                <span id="summarize-trigger-spinner" style="position: relative; top:-3px;" class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true"></span>
+                Summarize...
+            </button>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Source</th>
+                            <th>Titre</th>
+                            <th>Résumé</th>
+                            <th>Avis</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Source</th>
+                            <th>Titre</th>
+                            <th>Résumé</th>
+                            <th>Avis</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        {% for article in articles %}
+                        <tr>
+                            <td><span class="badge badge-dark">{{article.domain}}</span></td>
+                            <td><a href="/articles/{{article.id}}">
+                                    {{ article.title }}</a> </td>
+                            <td>{{ article.summary }}</td>
+                            <td>
+                                {% if article.grade == 'SMILE' %}
+                                <button disabled name="grade" value="smile" class="btn btn-success"><i
+                                        class="far fa-smile"></i></i></button>
+                                {% elif article.grade == 'MEH' %}
+                                <button disabled name="grade" value="meh" class="btn btn-warning"><i
+                                        class="far fa-meh"></i></button>
+                                {% elif article.grade == 'FROWN' %}
+                                <button disabled name="grade" value="frown" class="btn btn-danger"><i
+                                        class="far fa-frown"></i></i></button>
+                                {% else %}
+                                <div>
+                                    <a href="/articles/{{article.id}}/grade/SMILE" name="grade" value="smile"
+                                        class="btn btn-success"><i class="far fa-smile"></i></i></a>
+                                    <a href="/articles/{{article.id}}/grade/MEH" name="grade" value="meh"
+                                        class="btn btn-warning"><i class="far fa-meh"></i></a>
+                                    <a href="/articles/{{article.id}}/grade/FROWN" name="grade" value="frown"
+                                        class="btn btn-danger"><i class="far fa-frown"></i></i></a>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+<!-- <script src="{{ url_for('static', filename='js/article/update.js') }} "></script>
+<script src="{{ url_for('static', filename='js/scrap/launch.js') }} "></script> -->
+{%endblock%}

@@ -4,7 +4,7 @@
 
 {%block content%}
 
-<div class="container">
+<div class="container-fluid">
 
     <div class="row">
         <div class="col-12">
@@ -16,9 +16,17 @@
                                 {{article.title}}
                             </h3>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
+                        {% if article.grade == 'SMILE' %}
+                        <button disabled name="grade" value="smile" class="btn btn-success"><i class="far fa-smile"></i></i></button>
+                        {% elif article.grade == 'MEH' %}
+                        <button disabled name="grade" value="meh" class="btn btn-warning"><i class="far fa-meh"></i></button>
+                        {% elif article.grade == 'FROWN' %}
+                        <button disabled name="grade" value="frown" class="btn btn-danger"><i class="far fa-frown"></i></i></button>
+                        {% else %}
+                        <a href="/control/articles/grade?articleId={{article.id}}&grade=smile" name="grade" value="smile" class="btn btn-success"><i class="far fa-smile"></i></i></a>
+                        <a href="/control/articles/grade?articleId={{article.id}}&grade=meh" name="grade" value="meh" class="btn btn-warning"><i class="far fa-meh"></i></a>
+                        <a href="/control/articles/grade?articleId={{article.id}}&grade=frown" name="grade" value="frown" class="btn btn-danger"><i class="far fa-frown"></i></i></a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -38,22 +46,11 @@
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-secondary">Actions</h6>
                 </div>
-                <div class="row m-0">
-                    <div class="col-6 m-0 p-0">
-                        <select id="{{ article.link }}-state" class="state custom-select" aria-label="Default select example">
-                            <option selected>Open this select menu</option>
-                            <option value="1">Non trié</option>
-                            <option value="2">Trié</option>
-                            <option value="3">Lu</option>
-                        </select>
-                    </div>
-                    <div class="col-6 p-0 m-0"> <select id="{{ article.link }}-state" class="state custom-select" aria-label="Default select example">
-                        <option selected>Open this select menu</option>
-                        <option value="1">Non trié</option>
-                        <option value="2">Trié</option>
-                        <option value="3">Lu</option>
-                    </select></div>
-
+                <div class="card-body">
+                    <span>Classement :</span>
+                    <a href="/control/articles/grade?articleId={{article.id}}&grade=smile" name="grade" value="smile" class="btn btn-success"><i class="far fa-smile"></i></i></a>
+                    <a href="/control/articles/grade?articleId={{article.id}}&grade=meh" name="grade" value="meh" class="btn btn-warning"><i class="far fa-meh"></i></a>
+                    <a href="/control/articles/grade?articleId={{article.id}}&grade=frown" name="grade" value="frown" class="btn btn-danger"><i class="far fa-frown"></i></i></a>
                 </div>
 
                 
