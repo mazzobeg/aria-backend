@@ -7,11 +7,13 @@ from threading import Thread
 from flask import Flask
 from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 import click
 
-BASE = declarative_base()
-DB = SQLAlchemy(model_class=BASE)
+class Base(DeclarativeBase):
+    pass
+
+DB = SQLAlchemy(model_class=Base)
 
 
 def create_app(test_config=None):
