@@ -1,4 +1,5 @@
 # Aria
+![example branch parameter](https://github.com/mazzobeg/aria/actions/workflows/pylint.yml/badge.svg?branch=develop)
 
 ## Description
 
