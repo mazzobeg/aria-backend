@@ -19,11 +19,11 @@ def test_create_scrapers():
     """
     scrapers = create_scrapers(get_resources("scrapers"))
     assert len(scrapers) == 2
-    scraper1 = scrapers[1]
+    scraper1 = [scraper for scraper in scrapers if scraper.name == "scraper_test"][0]
     assert scraper1.name == "scraper_test"
     assert scraper1.path == f'{get_resources("scrapers")}/scraper_test.py'
     assert scraper1.kwargs == "{}"
-    scraper2 = scrapers[0]
+    scraper2 = [scraper for scraper in scrapers if scraper.name == "scraper_with_conf"][0]
     assert scraper2.name == "scraper_with_conf"
     assert scraper2.path == f'{get_resources("scrapers")}/scraper_with_conf.py'
     assert scraper2.kwargs == '{"a": 0}'
