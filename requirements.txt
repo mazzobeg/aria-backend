@@ -97,7 +97,7 @@ tensorboard==2.13.0
 tensorboard-data-server==0.7.1
 tensorflow==2.13.0
 tensorflow-estimator==2.13.0
-tensorflow-macos==2.13.0
+tensorflow-macos==2.13.0; platform_system == "Darwin"
 termcolor==2.3.0
 tokenizers==0.12.1
 tomli==2.0.1
