@@ -36,17 +36,27 @@ def test_post_article(test_app):
     # assert that data are present in the database
     with test_app.app_context():
         assert len(db.session.query(Article).all()) == 1
-
+        # delete all articles in the database
+        db.session.query(Article).delete()
+        db.session.commit()
 
 def test_get_articles_without_summary(test_app):
     """
     Test the get_articles_without_summary function.
     """
     test_app.app_context().push()
+
+    article = Article("TITLE1", "LINK1", "CONTENT1")
+
     with test_app.app_context():
-        db.session.add(Article("TITLE1", "LINK1", "CONTENT1"))
+        db.session.add(article)
         db.session.commit()
 
     articles = get_articles_without_summary()
     assert articles is not None
     assert len(articles) == 1
+
+    with test_app.app_context():
+        # delete all articles
+        db.session.query(Article).delete()
+        db.session.commit()
