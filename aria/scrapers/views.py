@@ -68,7 +68,7 @@ def trigger_scraper_by_name(scraper_name):
     """
     scraper = Scraper.query.filter_by(name=scraper_name).first()
     # trigger the scraper as a celery task
-    trigger_scraper_task.delay(scraper.name, scraper.path, scraper.kwargs)
+    trigger_scraper_task.delay(scraper.path, scraper.kwargs)
     # redirect to scrapers page
     return redirect("/scrapers")
 

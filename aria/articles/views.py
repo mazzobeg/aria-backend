@@ -99,7 +99,7 @@ def start_summarize():
     """
     Route to start summarizing articles.
     """
-    articles_without_summary = Article.query.filter(Article.summary is None).all()
+    articles_without_summary = Article.query.filter(Article.summary == "" or Article.summary == None).all()
     callback_endpoint = url_for("articles.article_add_summary", _external=True)
     uiid = summarize_articles_task.delay(
         [article.id for article in articles_without_summary],
