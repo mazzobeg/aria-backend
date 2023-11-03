@@ -3,7 +3,7 @@ This module contains the pytest fixtures for the application.
 """
 import pytest
 from aria import create_app, init_db
-
+from aria import DB as db
 
 @pytest.fixture(scope="module")
 def test_app():
@@ -19,3 +19,6 @@ def test_app():
     with app.app_context():
         init_db()
     yield app
+
+    with app.app_context():
+        db.drop_all()
