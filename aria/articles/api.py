@@ -14,6 +14,7 @@ class ArticleAPI(Resource):
     """
     API Resource for articles.
     """
+    # pylint: disable=R0903
     @NS.expect(article_input_model)
     @NS.marshal_with(article_model)
     def post(self):
