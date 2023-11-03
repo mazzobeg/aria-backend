@@ -6,6 +6,7 @@ import logging as log
 from flask import Blueprint, render_template, redirect, request, url_for
 from sqlalchemy.exc import IntegrityError
 from aria.articles.models import Article, ArticleGrade
+from aria.articles.services import get_articles_without_summary
 from aria.celery.core import summarize_articles_task
 from aria import DB as db
 from aria.celery.core import running_tasks
@@ -99,7 +100,7 @@ def start_summarize():
     """
     Route to start summarizing articles.
     """
-    articles_without_summary = Article.query.filter(Article.summary == "" or Article.summary == None).all()
+    articles_without_summary = get_articles_without_summary()
     callback_endpoint = url_for("articles.article_add_summary", _external=True)
     uiid = summarize_articles_task.delay(
         [article.id for article in articles_without_summary],
