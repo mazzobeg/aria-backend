@@ -8,6 +8,7 @@ from flask import Flask
 from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
+from flask_restx import Api
 import click
 
 class Base(DeclarativeBase):
@@ -19,7 +20,7 @@ class Base(DeclarativeBase):
     pass
 
 DB = SQLAlchemy(model_class=Base)
-
+API = Api(doc="/doc")
 
 def create_app(test_config=None):
     """
@@ -34,6 +35,10 @@ def create_app(test_config=None):
 
     DB.init_app(app)
     app.cli.add_command(init_db_cmd)
+
+    from aria.articles.api import NS
+    API.init_app(app)
+    API.add_namespace(NS)
 
     from aria.celery.core import my_monitor, celery
 

@@ -2,9 +2,7 @@
 This module contains the views for the articles blueprint.
 """
 import re
-import logging as log
 from flask import Blueprint, render_template, redirect, request, url_for
-from sqlalchemy.exc import IntegrityError
 from aria.articles.models import Article, ArticleGrade
 from aria.articles.services import get_articles_without_summary
 from aria.celery.core import summarize_articles_task
@@ -29,7 +27,9 @@ def articles():
             "link": article.link,
             "summary": "" if article.summary is None else article.summary,
             "grade": "" if article.grade is None else article.grade.value,
-            "domain": regex.search(article.link).group(1),
+            "domain": regex.search(article.link).group(1)
+            if regex.search(article.link) is not None
+            else "",
         }
         for article in all_articles
     ]
@@ -66,21 +66,6 @@ def delete_all_articles():
     Article.query.delete()
     db.session.commit()
     return redirect("/articles")
-
-
-@articles_blueprint.route("/articles/add", methods=["PUT"])
-def add_article():
-    """
-    Route to add an article.
-    """
-    data = request.get_json()
-    article = Article(data["title"], data["link"], data["content"])
-    try:
-        db.session.add(article)
-        db.session.commit()
-    except IntegrityError:
-        log.debug("Article already in database")
-    return str(article.id)
 
 
 @articles_blueprint.route("/articles/<string:article_id>", methods=["GET"])
