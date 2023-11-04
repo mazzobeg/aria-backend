@@ -28,4 +28,4 @@ function fetchAndDisplayState() {
 }
 
 fetchAndDisplayState();
-setInterval(fetchAndDisplayState, 5000);
+setInterval(fetchAndDisplayState, 1000);

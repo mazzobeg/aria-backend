@@ -1,10 +1,12 @@
 /**
- * 
- * @param {Element} element 
+ * This function triggers the summarization process.
+ * It sends a fetch request to the '/articles/summarize/start' endpoint.
+ * If the element has a 'disabled' class, the function returns immediately.
+ * @param {Element} element - The element to check for the 'disabled' class.
  */
 async function triggerSummarization(element) {
     if (element.classList.contains('disabled')) {
-        return; 
+        return;
     }
     fetch('/articles/summarize/start')
         .then(function (response) {
@@ -23,22 +25,20 @@ async function triggerSummarization(element) {
 }
 
 /**
- * Create a function to request (ajax) /articles/summarize/status and log results
+ * This function sends a GET request to the '/articles/summarize/status' endpoint.
+ * It updates the summarization button's CSS based on the response.
+ * If the response indicates that the summarization process is running, it sets the button to the 'ON' state.
+ * If the response indicates that the summarization process is not running, it sets the button to the 'OFF' state.
  */
 function fetchAndDisplayStatus() {
     $.ajax({
         url: "/articles/summarize/status",
         type: "GET",
         success: function (data) {
-            console.log(data);
             if (data.running == true) {
-                document.getElementById('summarize-trigger-spinner').attributes.removeNamedItem('hidden');
-                document.getElementById('action-summarize').attributes.setNamedItem(document.createAttribute('disabled'));
+                switchSummarizeBtnCss(SummarizationStatus.ON)
             } else if (data.running == false) {
-                console.log('Summarization is not running');
-                document.getElementById('summarize-trigger-spinner').attributes.setNamedItem(document.createAttribute('hidden'));
-                document.getElementById('action-summarize').textContent = 'Summarize';
-                document.getElementById('action-summarize').attributes.removeNamedItem('disabled');
+                switchSummarizeBtnCss(SummarizationStatus.OFF)
             } else {
                 throw new Error('Incorrect response from server');
             }
@@ -47,6 +47,41 @@ function fetchAndDisplayStatus() {
             console.error('Erreur :', error);
         }
     });
+}
+
+/**
+ * This is an enumeration for the summarization status.
+ * It has two possible values: 'ON' and 'OFF'.
+ */
+const SummarizationStatus = Object.freeze({
+    ON: Symbol("on"),
+    OFF: Symbol("off")
+});
+
+/**
+ * This function updates the summarization button's CSS based on the provided status.
+ * If the status is 'OFF', it enables the button and hides the spinner.
+ * If the status is 'ON', it disables the button and shows the spinner.
+ * @param {HTMLElement} element - The summarization button element.
+ * @param {SummarizationStatus} summarizationStatus - The status to set the button to.
+ */
+function switchSummarizeBtnCss(summarizationStatus) {
+    let btn = document.getElementById('action-summarize');
+    let spinner = document.getElementById('action-summarize-spinner');
+    let text = document.getElementById('action-summarize-text');
+    if (summarizationStatus == SummarizationStatus.OFF) {
+        if (btn.attributes.getNamedItem('disabled') != null)
+            btn.attributes.removeNamedItem('disabled');
+        if (spinner.attributes.getNamedItem('hidden') == null)
+            spinner.attributes.setNamedItem(document.createAttribute('hidden'));
+        text.textContent = 'Summarize';
+    } else {
+        if (btn.attributes.getNamedItem('disabled') == null)
+            btn.attributes.setNamedItem(document.createAttribute('disabled'));
+        if (spinner.attributes.getNamedItem('hidden') != null)
+            spinner.attributes.removeNamedItem('hidden');
+        text.textContent = 'Summarizing...';
+    }
 }
 
 fetchAndDisplayStatus();
