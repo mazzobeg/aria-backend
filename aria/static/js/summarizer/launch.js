@@ -84,5 +84,7 @@ function switchSummarizeBtnCss(summarizationStatus) {
     }
 }
 
-fetchAndDisplayStatus();
-setInterval(fetchAndDisplayStatus, 1000);
+$(document).ready(function () {
+    fetchAndDisplayStatus();
+    setInterval(fetchAndDisplayStatus, 1000);
+});

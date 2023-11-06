@@ -1,6 +1,5 @@
-// create a function requesting (with fetch) at each second /scrapers/status/<scraper_name> with <scraper_name> as parameter and log the status in the console
+
 function fetchAndDisplayState() {
-    // get all 'div' elements with class 'card-header' 'scraper-name'
     const scraperNames = document.querySelectorAll('div.card-header.scraper-name');
     scraperNames.forEach(sn => {
         const scraperName = sn.textContent.trim();
@@ -12,19 +11,44 @@ function fetchAndDisplayState() {
             return response.json();
         })
         .then(data => {
-            // add 'disabled' class to tag with id {{scraper.name}}-stop-btn if scraper is not running
             if (data.is_running === false) {
-                document.getElementById(`${scraperName}-stop-btn`).classList.add('disabled');
-                document.getElementById(`${scraperName}-start-btn`).classList.remove('disabled');
+                switchScraperBtnCss(ScrapperStatus.OFF, scraperName)
             } else {
-                document.getElementById(`${scraperName}-stop-btn`).classList.remove('disabled');
-                document.getElementById(`${scraperName}-start-btn`).classList.add('disabled');
+                switchScraperBtnCss(ScrapperStatus.ON, scraperName)
             }
         })
         .catch(error => {
             console.error('Erreur :', error);
         });
     })   
+}
+
+/**
+* This is an enumeration for the summarization status.
+* It has two possible values: 'ON' and 'OFF'.
+*/
+const ScrapperStatus = Object.freeze({
+    ON: Symbol("on"),
+    OFF: Symbol("off")
+});
+
+/**
+ * This function updates the summarization button's CSS based on the provided status.
+ * If the status is 'OFF', it enables the button and hides the spinner.
+ * If the status is 'ON', it disables the button and shows the spinner.
+ * @param {HTMLElement} element - The summarization button element.
+ * @param {ScrapperStatus} scrapperStatus - The status to set the button to.
+ */
+function switchScraperBtnCss(scrapperStatus, scraperName) {
+    let stopBtn = document.getElementById(`${scraperName}-stop-btn`)
+    let startBtn = document.getElementById(`${scraperName}-start-btn`)
+    if (scrapperStatus == ScrapperStatus.ON) {
+        stopBtn.classList.contains('disabled') ? stopBtn.classList.remove('disabled') : null;
+        !startBtn.classList.contains('disabled') ? startBtn.classList.add('disabled') : null;
+    } else {
+        !stopBtn.classList.contains('disabled') ? stopBtn.classList.add('disabled') : null;
+        startBtn.classList.contains('disabled') ? startBtn.classList.remove('disabled') : null;
+    }
 }
 
 fetchAndDisplayState();

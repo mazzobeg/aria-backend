@@ -98,7 +98,13 @@ def summarize_status(scraper_name):
     """
     scraper = Scraper.query.filter_by(name=scraper_name).first()
     for running_task in running_tasks.values():
-        if running_task["args"] == [scraper.name, scraper.path, scraper.kwargs]:
+        print("---------")
+        print("Comparaison")
+        print(running_task["args"])
+        print([scraper.path, scraper.kwargs])
+        print(running_task["args"] == [scraper.path, scraper.kwargs])
+        print("---------")
+        if (scraper.path in running_task["args"]) and ( scraper.kwargs in running_task["args"]):
             return {"is_running": True}, 200
     return {"is_running": False}, 200
 
