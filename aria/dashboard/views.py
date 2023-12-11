@@ -23,4 +23,4 @@ def dashboard():
         "unclassified_article_number": unclassified_article_number,
         "last_scraper_trigger": "N/A",
     }
-    return render_template("dashboard.html", data=data)
+    return render_template("dashboard.html", datas=data)

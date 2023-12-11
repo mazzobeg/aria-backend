@@ -4,7 +4,8 @@ This module contains the Flask application factory and the database initializati
 # pylint: disable=R0401
 # pylint: disable=C0415
 from threading import Thread
-from flask import Flask
+import logging as log
+from flask import Flask, redirect
 from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
@@ -33,6 +34,14 @@ def create_app(test_config=None):
     else:
         app.config.update(test_config)
 
+    # Need to be set before api registration beceause of creation of another root
+    @app.route("/")
+    def home():
+        """
+        Route to display the home page.
+        """
+        return redirect("/dashboard")
+
     DB.init_app(app)
     app.cli.add_command(init_db_cmd)
 
@@ -48,12 +57,14 @@ def create_app(test_config=None):
     from aria.scrapers.views import scrapers_blueprint
     from aria.articles.views import articles_blueprint
     from aria.dashboard.views import dashboard_bp
-    from aria.views import root
 
     app.register_blueprint(scrapers_blueprint)
     app.register_blueprint(articles_blueprint)
     app.register_blueprint(dashboard_bp)
-    app.register_blueprint(root)
+
+    # display all roots of app
+    log.debug(app.url_map)
+
     return app
 
 
