@@ -25,7 +25,9 @@ def execute_scraper(scraper: Scraper):
     module = Module()
     exec(content, module.__dict__)
     result = module.main(json.loads(kwargs))
-    log.info(result)
+    if len(result["result"]) == 0:
+        log.warning("No articles found")
+        return
     for article in result["result"]:
         add_article(article["title"], article["link"], article["content"])
     return result
