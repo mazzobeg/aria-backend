@@ -18,14 +18,12 @@ jobs:
     - name: Analysing the code with pylint & Create badge
       run: |
         coverage=$(pylint -rn -fparseable backend/src | grep "Your code has been rated at" | awk '{print $7}' | awk -F '/' '{print $1}')
-    - name: Create badge
-      run: |
-        anybadge --value=$coverage --file coverage.svg -l pylint 2=red 4=orange 8=yellow 10=green
+        anybadge --value=$coverage --file badges/coverage.svg -l pylint 2=red 4=orange 8=yellow 10=green
     - name: Commit badge
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add coverage.svg
+        git add badges/coverage.svg
         git commit -m "Add coverage badge"
     - name: Push changes
       uses: ad-m/github-push-action@master
