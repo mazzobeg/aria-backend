@@ -3,7 +3,7 @@ name: Pylint
 on: [push]
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -14,7 +14,23 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pylint
-    - name: Analysing the code with pylint
+        pip install pylint anybadge
+    - name: Analysing the code with pylint & Create badge
       run: |
-        pylint $(git ls-files '*.py') --disable=E0401
+        coverage=$(pylint -rn -fparseable backend/src | grep "Your code has been rated at" | awk '{print $7}' | awk -F '/' '{print $1}')
+    - name: Create badge
+      run: |
+        anybadge --value=$coverage --file coverage.svg -l pylint 2=red 4=orange 8=yellow 10=green
+    - name: Commit the badge
+      run: |
+        git config --global user.email"
+    - name: Commit badge
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git commit -m "Add coverage badge" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.ARIA_GHACTIONS }}
+        branch: ${{ github.ref }}
