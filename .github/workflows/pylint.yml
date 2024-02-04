@@ -17,7 +17,7 @@ jobs:
         pip install pylint anybadge
     - name: Analysing the code with pylint & Create badge
       run: |
-        echo coverage=$(pylint -rn -fparseable backend/src)
+        echo coverage=$(pylint -rn -fparseable backend/src --disable=E0401)
         coverage_result=$(echo $coverage | grep "Your code has been rated at" | awk '{print $7}' | awk -F '/' '{print $1}')
         anybadge --value=$coverage_result --file badges/coverage.svg -o -l pylint 2=red 4=orange 8=yellow 10=green
     - name: Commit badge
