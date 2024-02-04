@@ -18,15 +18,22 @@ jobs:
     - name: Analysing the code with pylint & Create badge
       run: |
         coverage=$(pylint -rn -fparseable backend/src | grep "Your code has been rated at" | awk '{print $7}' | awk -F '/' '{print $1}')
-        rm badges/coverage.svg
-        anybadge --value=$coverage --file badges/coverage.svg -l pylint 2=red 4=orange 8=yellow 10=green
+        anybadge --value=$coverage --file badges/coverage.svg -l -o pylint 2=red 4=orange 8=yellow 10=green
     - name: Commit badge
+      id: commit
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add badges/coverage.svg
-        git commit -m "Add coverage badge"
+        if git diff-index --quiet HEAD --; then
+          echo "No changes to commit"
+          echo "::set-output name=commited::false"
+        else
+          git commit -m "Add coverage badge"
+          echo "::set-output name=commited::true"
+        fi
     - name: Push changes
+      if: steps.commit.outputs.commited == 'true'
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
