@@ -18,7 +18,8 @@ jobs:
     - name: Analysing the code with pylint & Create badge
       run: |
         coverage=$(pylint -rn -fparseable backend/src | grep "Your code has been rated at" | awk '{print $7}' | awk -F '/' '{print $1}')
-        anybadge --value=$coverage --file badges/coverage.svg -o -l pylint 2=red 4=orange 8=yellow 10=green
+        rm badges/coverage.svg
+        anybadge --value=$coverage --file badges/coverage.svg -l pylint 2=red 4=orange 8=yellow 10=green
     - name: Commit badge
       run: |
         git config --local user.email "action@github.com"
