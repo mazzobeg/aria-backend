@@ -1,6 +1,6 @@
 # Aria
-![example branch parameter](https://github.com/mazzobeg/aria/actions/workflows/pylint.yml/badge.svg?branch=develop)
-![example branch parameter](https://github.com/mazzobeg/aria/actions/workflows/python-test.yml/badge.svg?branch=develop)
+![pylint](https://github.com/mazzobeg/aria/blob/develop/badges/coverage.svg)
+![pytest](https://github.com/mazzobeg/aria/actions/workflows/python-test.yml/badge.svg?branch=develop)
 
 ## Description
 
