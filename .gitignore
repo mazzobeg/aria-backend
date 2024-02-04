@@ -18,3 +18,4 @@ env
 tools
 
 !.github
+!coverage.svg
