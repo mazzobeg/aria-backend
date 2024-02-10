@@ -9,4 +9,4 @@
 !Dockerfile
 !pyproject.toml
 !migrations/
-
+!.github/
