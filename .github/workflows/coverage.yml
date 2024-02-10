@@ -37,23 +37,21 @@ jobs:
     - name: Prepare badge
       id: prepare
       run: |
-        echo "coverage_badge_path=${{steps.extract_branch.outputs.branch}}/coverage.svg" >> "${GITHUB_OUTPUT}"
-        echo ${{steps.extract_branch.outputs.branch}}/coverage.svg
+        echo "coverage_badge_path=${{steps.extract_branch.outputs.branch}}" >> "${GITHUB_OUTPUT}"
         mkdir -p ${{steps.extract_branch.outputs.branch}}/coverage.svg
-        ls ${{steps.extract_branch.outputs.branch}}
-        
+
     - name: Add coverage badge
       uses: emibcn/badge-action@v2.0.2
       with:
         label: 'Test coverage'
         status: ${{ steps.test.outputs.coverage_score }}
         color: 'blue'
-        path: ${{ steps.prepare.outputs.coverage_badge_path }}
+        path: ${{ steps.prepare.outputs.coverage_badge_path }}/coverage.svg
   
     - name: Commit badge
       id: commit
       run: |
-        ls ${{ steps.prepare.outputs.coverage_badge_path }}
+        ls ${{ steps.prepare.outputs.coverage_badge_path }}/coverage.svg
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add ${{ steps.prepare.outputs.coverage_badge_path }}
