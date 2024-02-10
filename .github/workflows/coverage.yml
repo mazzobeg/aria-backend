@@ -40,7 +40,8 @@ jobs:
         echo "coverage_badge_path=${{steps.extract_branch.outputs.branch}}/coverage.svg" >> "${GITHUB_OUTPUT}"
         echo ${{steps.extract_branch.outputs.branch}}/coverage.svg
         mkdir -p ${{steps.extract_branch.outputs.branch}}/coverage.svg
-
+        ls ${{steps.extract_branch.outputs.branch}}
+        
     - name: Add coverage badge
       uses: emibcn/badge-action@v2.0.2
       with:
