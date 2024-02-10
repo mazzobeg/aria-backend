@@ -1,3 +1,7 @@
+# ARIA
+
+![](https://github.com/mazzobeg/aria-backend/blob/badges/develop/coverage.svg)
+
 ## Install from source
 ```
 flit install

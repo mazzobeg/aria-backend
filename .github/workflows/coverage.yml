@@ -27,7 +27,7 @@ jobs:
       run: |
         coverage run -m pytest
         coverage report -m
-        coverage_score=$(coverage report -m | awk 'END{print$4}') >> "${GITHUB_OUTPUT}"
+        echo "coverage_score=$(coverage report -m | awk 'END{print$4}')" >> "${GITHUB_OUTPUT}"
 
     - name: Extract branch name
       shell: bash
