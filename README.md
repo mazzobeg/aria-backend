@@ -1,6 +1,6 @@
 # ARIA
 
-![](https://github.com/mazzobeg/aria-backend/blob/badges/develop/coverage.svg)
+![](https://raw.githubusercontent.com/mazzobeg/aria-backend/badges/develop/coverage.svg)
 
 ## Install from source
 ```
