@@ -21,5 +21,6 @@ jobs:
         pip install pytest coverage
     - name: Test with pytest
       run: |
+        ls
         coverage run -m pytest
         coverage report -m
