@@ -11,24 +11,51 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
+    
     - name: Install dependencies
       run : |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    
     - name: Test with pytest
+      id: test
       run: |
         coverage run -m pytest
         coverage report -m
         coverage_score=$(coverage report -m | awk 'END{print$4}')
+
+    - name: Prepare badge
+      id: prepare
+      run: |
+        branch=${GITHUB_REF#refs/heads/}
+        coverage_badge_path=$branch/coverage.svg
+        mkdir -p $coverage_badge_path
+        ls
+
     - name: Add coverage badge
       uses: emibcn/badge-action@v2.0.2
       with:
         label: 'Test coverage'
-        status: $coverage_score
+        status: ${{ steps.test.outputs.coverage_score }}
         color: 'blue'
-        path: 'coverage.svg'
-      
+        path: ${{ steps.prepare.outputs.branch }}
+    
+    - name: Commit badge
+      id: commit
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add ${{ steps.prepare.outputs.branch }}
+        git commit -m "Add coverage badge"
+
+    - name: Push changes
+      if: steps.commit.outputs.commited == 'true'
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: badges
