@@ -3,3 +3,6 @@
 !requirements.txt
 !src/
 !tests/
+!LICENSE
+!Dockerfile
+!pyproject.toml
