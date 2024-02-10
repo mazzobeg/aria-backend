@@ -40,6 +40,10 @@ jobs:
         echo "coverage_badge_path=${{steps.extract_branch.outputs.branch}}" >> "${GITHUB_OUTPUT}"
         mkdir -p ${{steps.extract_branch.outputs.branch}}
 
+    - uses: actions/checkout@v4
+      with:
+        ref: badges
+
     - name: Add coverage badge
       uses: emibcn/badge-action@v2.0.2
       with:
