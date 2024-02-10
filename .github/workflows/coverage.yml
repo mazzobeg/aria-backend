@@ -32,8 +32,8 @@ jobs:
     - name: Prepare badge
       id: prepare
       run: |
-        branch=${GITHUB_REF#refs/heads/} >> "${GITHUB_OUTPUT}"
-        coverage_badge_path=$branch/coverage.svg >> "${GITHUB_OUTPUT}"
+        "branch=${GITHUB_REF#refs/heads/}" >> "${GITHUB_OUTPUT}"
+        "coverage_badge_path=$branch/coverage.svg" >> "${GITHUB_OUTPUT}"
         mkdir -p $coverage_badge_path
 
     - name: Add coverage badge
