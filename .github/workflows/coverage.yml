@@ -58,7 +58,6 @@ jobs:
         git commit -m "Add coverage badge"
 
     - name: Push changes
-      if: steps.commit.outputs.commited == 'true'
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
