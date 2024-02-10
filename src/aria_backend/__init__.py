@@ -34,14 +34,15 @@ def init_db_cmd():
     click.echo("Database initialized.")
 
 
-def create_app(config_path: str):
+def create_app(config: dict):
     """
     Application factory function.
     """
     app = Flask(__name__)
     CORS(app)  # TODO remove this in production
 
-    app.config.from_pyfile(config_path, silent=False)
+    # app.config.from_pyfile(config_path, silent=False)
+    app.config.update(config)
 
     DB.init_app(app)
     MIGRATE.init_app(app, DB)
