@@ -35,7 +35,6 @@ jobs:
         branch=${GITHUB_REF#refs/heads/}
         coverage_badge_path=$branch/coverage.svg
         mkdir -p $coverage_badge_path
-        ls
 
     - name: Add coverage badge
       uses: emibcn/badge-action@v2.0.2
@@ -43,14 +42,15 @@ jobs:
         label: 'Test coverage'
         status: ${{ steps.test.outputs.coverage_score }}
         color: 'blue'
-        path: ${{ steps.prepare.outputs.branch }}
-    
+        path: ${{ steps.prepare.outputs.coverage_badge_path }}
+  
     - name: Commit badge
       id: commit
       run: |
+        ls ${{ steps.prepare.outputs.branch }}
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add ${{ steps.prepare.outputs.branch }}
+        git add ${{ steps.prepare.outputs.coverage_badge_path }}
         git commit -m "Add coverage badge"
 
     - name: Push changes
