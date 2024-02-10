@@ -1,6 +1,6 @@
-from src.extensions import DB
-from src.scrapers.models import Scraper
-from src.articles.services import add_article
+from ..extensions import DB
+from .models import Scraper
+from ..articles.services import add_article
 import json
 import logging as log
 

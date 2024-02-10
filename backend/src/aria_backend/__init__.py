@@ -1,10 +1,17 @@
+"""
+aria_backend package initialization.
+"""
+
+__version__ = "0.1.0"
+
 from flask import Flask
-from src.extensions import DB, API, MIGRATE
+from .extensions import DB, API, MIGRATE
 import click
 from flask.cli import with_appcontext
 import logging as log
 from flask_cors import CORS
 from flask_migrate import Migrate
+import os
 
 log.basicConfig(level=log.DEBUG)
 
@@ -27,25 +34,22 @@ def init_db_cmd():
     click.echo("Database initialized.")
 
 
-def create_app(test_config=None):
+def create_app(config_path: str):
     """
     Application factory function.
     """
     app = Flask(__name__)
     CORS(app)  # TODO remove this in production
 
-    if test_config is None:
-        app.config.from_pyfile("config.py", silent=True)
-    else:
-        app.config.update(test_config)
+    app.config.from_pyfile(config_path, silent=False)
 
     DB.init_app(app)
     MIGRATE.init_app(app, DB)
 
     app.cli.add_command(init_db_cmd)
 
-    from src.articles.api import NS
-    from src.scrapers.api import NS as NS_SCRAPERS
+    from .articles.api import NS
+    from .scrapers.api import NS as NS_SCRAPERS
 
     API.init_app(app)
     API.add_namespace(NS)

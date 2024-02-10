@@ -5,9 +5,9 @@ This module contains the ArticleAPI class.
 import logging as log
 from flask_restx import Resource, Namespace
 from sqlalchemy.exc import IntegrityError
-from src.articles.models import article_input_model, article_model, Article
-from src.extensions import DB as db
-from src.articles.services import summarize, translate
+from .models import article_input_model, article_model, Article
+from ..extensions import DB as db
+from .services import summarize, translate
 
 NS = Namespace("articles")
 

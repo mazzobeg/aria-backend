@@ -1,9 +1,9 @@
 from flask_restx import Namespace, Resource
-from src.scrapers.models import Scraper, scraper_model
-from src.extensions import DB as db
+from .models import Scraper, scraper_model
+from ..extensions import DB as db
 from sqlalchemy.exc import IntegrityError
 import logging as log
-from src.scrapers.services import get_scraper, execute_scraper
+from .services import get_scraper, execute_scraper
 
 NS = Namespace("scrapers")
 

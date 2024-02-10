@@ -1,7 +1,7 @@
-from src.articles.models import Article
+from .models import Article
 import requests
 import logging as log
-from src.extensions import DB as db
+from ..extensions import DB as db
 
 
 def add_article(title: str, link: str, content: str):

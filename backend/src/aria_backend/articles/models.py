@@ -6,8 +6,8 @@ import hashlib
 from enum import Enum
 from sqlalchemy.orm import Mapped
 from flask_restx import fields
-from src.extensions import DB as db
-from src.extensions import API as api
+from ..extensions import DB as db
+from ..extensions import API as api
 
 
 # pylint: disable=R0913

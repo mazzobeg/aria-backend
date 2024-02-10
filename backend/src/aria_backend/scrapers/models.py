@@ -5,8 +5,8 @@ This module contains the Scraper model.
 import json
 from sqlalchemy.orm import Mapped
 from sqlalchemy import Column, String
-from src.extensions import DB as db
-from src.extensions import API as api
+from ..extensions import DB as db
+from ..extensions import API as api
 from flask_restx import fields
 
 
