@@ -29,14 +29,17 @@ jobs:
         coverage report -m
         coverage_score=$(coverage report -m | awk 'END{print$4}') >> "${GITHUB_OUTPUT}"
 
+    - name: Extract branch name
+      shell: bash
+      run: echo "branch=${GITHUB_REF#refs/heads/}" >> "${GITHUB_OUTPUT}"
+      id: extract_branch
+
     - name: Prepare badge
       id: prepare
       run: |
-        branch=${GITHUB_REF#refs/heads/}
-        coverage_badge_path=$branch/coverage.svg
-        echo $branch >> "${GITHUB_OUTPUT}"
-        echo $coverage_badge_path >> "${GITHUB_OUTPUT}"
-        mkdir -p $coverage_badge_path
+        echo "coverage_badge_path=${{steps.extract_branch.outputs.branch}}/coverage.svg" >> "${GITHUB_OUTPUT}"
+        echo ${{steps.extract_branch.outputs.branch}}/coverage.svg
+        mkdir -p ${{steps.extract_branch.outputs.branch}}/coverage.svg
 
     - name: Add coverage badge
       uses: emibcn/badge-action@v2.0.2
