@@ -1,5 +1,5 @@
-from src.articles.models import Article
-from src.articles.services import execute_summarize
+from aria_backend.articles.models import Article
+from aria_backend.articles.services import execute_summarize
 from tests.utils import get_resources
 from tests.conftest import test_app
 

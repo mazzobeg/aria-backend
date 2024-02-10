@@ -50,3 +50,6 @@ dependencies = [
 
 [project.scripts]
 aria-backend = "aria_backend.cli:main"
+
+[tool.pytest.ini_options]
+python_paths = ["./src"]

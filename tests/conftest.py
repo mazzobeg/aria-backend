@@ -3,8 +3,8 @@ This module contains the pytest fixtures for the application.
 """
 
 import pytest
-from src import create_app, init_db
-from src.extensions import DB as db
+from aria_backend import create_app, init_db
+from aria_backend.extensions import DB as db
 
 
 @pytest.fixture(scope="module")

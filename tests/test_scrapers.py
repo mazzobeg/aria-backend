@@ -1,7 +1,7 @@
 from tests.utils import get_resources
-from src.scrapers.services import get_scraper, execute_scraper
-from src.scrapers.models import Scraper
-from src.extensions import DB
+from aria_backend.scrapers.services import get_scraper, execute_scraper
+from aria_backend.scrapers.models import Scraper
+from aria_backend.extensions import DB
 from tests.conftest import test_app
 import io
 import sys
