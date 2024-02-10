@@ -11,3 +11,4 @@
 !pyproject.toml
 !migrations/
 !.github/
+!develop

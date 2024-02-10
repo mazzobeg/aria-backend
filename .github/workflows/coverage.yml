@@ -51,7 +51,6 @@ jobs:
     - name: Commit badge
       id: commit
       run: |
-        git checkout ${{ steps.extract_branch.outputs.branch}}
         ls ${{ steps.prepare.outputs.coverage_badge_path }}/coverage.svg
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
