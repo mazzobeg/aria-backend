@@ -1,22 +1,12 @@
-# BLACKLIST ALL
 /*
-# WHITELIST
-!/*/
-!/README.md
-!/requirements.txt
-!/run*
-!config.py
-!/aria/*
-# BLACKLIST
-tmp
-.*
-*pycache*
-instance
-env
-/scrapers
-*.log
-tools
+*__pycache__*
 
-!.github
-!coverage.svg
-!badges
+!.gitignore
+!requirements.txt
+!src/
+!tests/
+!LICENSE
+!Dockerfile
+!pyproject.toml
+!migrations/
+
