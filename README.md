@@ -1,5 +1,6 @@
 # ARIA
 
+![Testing](https://github.com/mazzobeg/aria-backend/actions/workflows/test.yml/badge.svg)
 ![](https://raw.githubusercontent.com/mazzobeg/aria-backend/badges/develop/coverage.svg)
 
 ## Install from source
