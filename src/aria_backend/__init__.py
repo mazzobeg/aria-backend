@@ -5,49 +5,31 @@ aria_backend package initialization.
 __version__ = "0.1.0"
 
 from flask import Flask
-from .extensions import DB, API, MIGRATE
+from .extensions import API
 import click
 from flask.cli import with_appcontext
 import logging as log
 from flask_cors import CORS
 from flask_migrate import Migrate
 import os
+from mongoengine import connect
 
 log.basicConfig(level=log.DEBUG)
 
 
-def init_db():
-    """
-    Initialize the database.
-    """
-    DB.drop_all()
-    DB.create_all()
-
-
-@click.command("init-db")
-@with_appcontext
-def init_db_cmd():
-    """
-    Database initialization command.
-    """
-    init_db()
-    click.echo("Database initialized.")
-
-
-def create_app(config: dict):
+def create_app(config_test=None):
     """
     Application factory function.
     """
     app = Flask(__name__)
     CORS(app)  # TODO remove this in production
 
-    # app.config.from_pyfile(config_path, silent=False)
-    app.config.update(config)
+    if not config_test:
+        app.config.from_pyfile("config.py", silent=False)
+    else:
+        app.config.update(config_test)
 
-    DB.init_app(app)
-    MIGRATE.init_app(app, DB)
-
-    app.cli.add_command(init_db_cmd)
+    connect(host=app.config["MONGO_URI"])
 
     from .articles.api import NS
     from .scrapers.api import NS as NS_SCRAPERS
