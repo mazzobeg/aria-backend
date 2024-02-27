@@ -1,9 +1,17 @@
 from flask_restx import Namespace, Resource
+
 from .models import Scraper, scraper_model
-from ..extensions import DB as db
-from sqlalchemy.exc import IntegrityError
+
 import logging as log
-from .services import get_scraper, execute_scraper
+
+from .services import (
+    get_scraper,
+    execute_scraper,
+    update_scraper,
+    delete_scraper,
+    add_scraper,
+    get_scrapers,
+)
 
 NS = Namespace("scrapers")
 
@@ -18,37 +26,31 @@ class ScrapersAPI(Resource):
             content=NS.payload["content"],
             kwargs=NS.payload["kwargs"],
         )
-        try:
-            db.session.add(scraper)
-            db.session.commit()
-            return scraper, 201
-        except IntegrityError:
-            log.debug("Scraper already in database")
-            return scraper, 500
+        add_scraper(scraper)
+        return scraper, 201
 
     @NS.marshal_with(scraper_model)
     def get(self):
-        scrapers = db.session.query(Scraper).all()
-        return scrapers, 201
+        return get_scrapers(), 201
 
 
 @NS.route("/scrapers/<string:scraper_name>")
 class ScraperAPI(Resource):
     @NS.marshal_with(scraper_model)
     def get(self, scraper_name):
-        scraper = get_scraper(scraper_name)
-        if scraper is None:
+        try:
+            scraper = get_scraper(scraper_name)
+            return scraper, 200
+        except ValueError:
             return {"message": "Scraper not found"}, 404
-        return scraper, 200
 
     @NS.expect(scraper_model)
     def delete(self, scraper_name):
-        scraper = get_scraper(scraper_name)
-        if scraper is None:
+        try:
+            delete_scraper(scraper_name)
+            return {"message": "Scraper deleted"}, 200
+        except ValueError:
             return {"message": "Scraper not found"}, 404
-        db.session.delete(scraper)
-        db.session.commit()
-        return {"message": "Scraper deleted"}, 200
 
     @NS.expect(scraper_model)
     @NS.marshal_with(scraper_model)
@@ -59,7 +61,7 @@ class ScraperAPI(Resource):
         scraper.name = NS.payload["name"]
         scraper.content = NS.payload["content"]
         scraper.kwargs = NS.payload["kwargs"]
-        db.session.commit()
+        update_scraper(scraper_name, scraper)
         return scraper, 200
 
 

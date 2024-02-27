@@ -3,11 +3,19 @@ This module contains the ArticleAPI class.
 """
 
 import logging as log
-from flask_restx import Resource, Namespace
+from flask_restx import Resource, Namespace, marshal
 from sqlalchemy.exc import IntegrityError
 from .models import article_input_model, article_model, Article
-from ..extensions import DB as db
-from .services import summarize, translate
+
+from .services import (
+    summarize,
+    translate,
+    get_articles,
+    add_article,
+    get_article,
+    delete_article,
+    update_article,
+)
 
 NS = Namespace("articles")
 
@@ -30,21 +38,16 @@ class ArticlesAPI(Resource):
             link=NS.payload["link"],
             content=NS.payload["content"],
         )
-        try:
-            db.session.add(article)
-            db.session.commit()
-            return article, 201
-        except IntegrityError:
-            log.debug("Article already in database")
-            return article, 500
+        add_article(article)
+        return article, 201
 
     @NS.marshal_with(article_model)
     def get(self):
         """
         Get method for getting an article.
         """
-        articles = db.session.query(Article).all()
-        return articles, 201
+        articles = get_articles()
+        return articles, 200
 
 
 @NS.route("/articles/<string:article_id>")
@@ -58,22 +61,22 @@ class ArticleAPI(Resource):
         """
         Get method for getting an article.
         """
-        article = db.session.query(Article).filter_by(id=article_id).first()
-        if article is None:
+        try:
+            article = get_article(article_id)
+            return article, 200
+        except ValueError:
             return {"message": "Article not found"}, 404
-        return article, 200
 
     @NS.marshal_with(article_model)
     def delete(self, article_id):
         """
         Delete method for deleting an article.
         """
-        article = db.session.query(Article).filter_by(id=article_id).first()
-        if article is None:
+        try:
+            delete_article(article_id)
+            return {"message": "Article deleted"}, 200
+        except ValueError:
             return {"message": "Article not found"}, 404
-        db.session.delete(article)
-        db.session.commit()
-        return {"message": "Article deleted"}, 200
 
     @NS.expect(article_input_model)
     @NS.marshal_with(article_model)
@@ -81,7 +84,8 @@ class ArticleAPI(Resource):
         """
         Put method for updating an article.
         """
-        article = db.session.query(Article).filter_by(id=article_id).first()
+        # article = db.session.query(Article).filter_by(id=article_id).first()
+        article = get_article(article_id)
         if article is None:
             return {"message": "Article not found"}, 404
         article.title = NS.payload["title"]
@@ -89,7 +93,7 @@ class ArticleAPI(Resource):
         article.content = NS.payload["content"]
         article.summary = NS.payload["summary"]
         article.state = NS.payload["state"]
-        db.session.commit()
+        update_article(article)
         return article, 200
 
 
@@ -104,11 +108,12 @@ class ArticleSummarizeAPI(Resource):
         """
         Post method for summarizing an article.
         """
-        article = db.session.query(Article).filter_by(id=article_id).first()
-        if article is None:
+        try:
+            article = get_article(article_id)
+            summarize(article)
+            return article, 200
+        except ValueError:
             return {"message": "Article not found"}, 404
-        summarize(article)
-        return article, 200
 
 
 @NS.route("/articles/<string:article_id>/translate")
@@ -122,8 +127,9 @@ class ArticleTranslateAPI(Resource):
         """
         Post method for translating an article.
         """
-        article = db.session.query(Article).filter_by(id=article_id).first()
-        if article is None:
+        try:
+            article = get_article(article_id)
+            translate(article)
+            return article, 200
+        except ValueError:
             return {"message": "Article not found"}, 404
-        translate(article)
-        return article, 200
