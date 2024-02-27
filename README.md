@@ -22,6 +22,10 @@ aria-backend -c <config_path>
 Here is an example of minimum configuration.
 ```json
 {
-    "SQLALCHEMY_DATABASE_URI": "sqlite:///<path_to_database>.db
+    "SQLALCHEMY_DATABASE_URI": "sqlite:///<path_to_database>.db"
 }
+```
+
+```zsh
+cd src && flask -A aria_backend run && cd ..
 ```
