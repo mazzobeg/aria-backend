@@ -12,3 +12,5 @@
 !migrations/
 !.github/
 !develop
+
+/src/aria_backend/config.py
