@@ -1,15 +1,46 @@
-from ..extensions import DB
 from .models import Scraper
+
 from ..articles.services import add_article
 import json
 import logging as log
 
 
+def get_scrapers() -> list[Scraper]:
+    """
+    Returns:
+        list[Scraper]: List of all scrapers
+    """
+    return Scraper.objects()
+
+
 def get_scraper(name) -> Scraper:
-    scraper = DB.session.query(Scraper).filter_by(name=name).first()
+    """
+    Raises:
+        ValueError: If the scraper does not exist
+    """
+    scraper = Scraper.objects().filter(name=name).first()
     if scraper is None:
-        raise ValueError("Scraper not found")
+        raise ValueError(f"Scraper {name} does not exist")
     return scraper
+
+
+def add_scraper(scraper: Scraper):
+    scraper.save()
+
+
+def delete_scraper(name):
+    """
+    Raises:
+        ValueError: If the scraper does not exist
+    """
+    scraper = Scraper.objects(name=name).first()
+    if scraper is None:
+        raise ValueError(f"Scraper {name} does not exist")
+    scraper.delete()
+
+
+def update_scraper(scraper: Scraper):
+    scraper.save()
 
 
 class Module:

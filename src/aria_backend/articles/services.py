@@ -1,26 +1,50 @@
 from .models import Article
 import requests
 import logging as log
-from ..extensions import DB as db
+from bson import ObjectId
 
 
-def add_article(title: str, link: str, content: str):
-    article = Article(title, link, content)
-    try:
-        db.session.add(article)
-        db.session.commit()
-    except Exception as e:
-        log.debug(e)
-        db.session.rollback()
-        log.debug("Article already in database")
+def add_article(article: Article) -> Article:
+    return article.save()
+
+
+def get_articles() -> list[Article]:
+    articles = Article.objects.all()
+    return list(articles)
+
+
+def get_article(id: str) -> Article:
+    """
+    Raises:
+        ValueError: If the article does not exist
+    """
+    article = Article.objects.with_id(id)
+    if not article or len(article) == 0:
+        raise ValueError(f"Article {id} does not exist")
+    else:
+        return article
+
+
+def delete_article(id):
+    """
+    Raises:
+        ValueError: If the article does not exist
+    """
+    article = Article.objects(id=id).first()
+    if article is None:
+        raise ValueError(f"Article {id} does not exist")
+    article.delete()
+
+
+def update_article(article: Article):
+    article.save()
 
 
 def summarize(article: Article):
     result = execute_summarize(article)
-    db.session.query(Article).filter_by(title=article.title).update(
-        {Article.summary: result}
-    )
-    db.session.commit()
+    article = get_article(article.title)
+    article.summary = result
+    update_article(article)
 
 
 def execute_summarize(article: Article):
@@ -52,10 +76,15 @@ SUMMARY:
 
 def translate(article: Article):
     result = execute_translation(article)
-    db.session.query(Article).filter_by(title=article.title).update(
-        {Article.summary_translation: result}
+    # db.session.query(Article).filter_by(title=article.title).update(
+    #     {Article.summary_translation: result}
+    # )
+    # db.session.commit()
+    article = MONGO.db.articles.find_one({"title": article.title})
+    article.summary_translation = result
+    MONGO.db.articles.update_one(
+        {"title": article.title}, {"$set": {"summary_translation": result}}
     )
-    db.session.commit()
 
 
 def execute_translation(article: Article):
