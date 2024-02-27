@@ -2,12 +2,10 @@
 This module contains the ArticleGrade Enum and the Article model.
 """
 
-import hashlib
 from enum import Enum
-from sqlalchemy.orm import Mapped
 from flask_restx import fields
-from ..extensions import DB as db
 from ..extensions import API as api
+from mongoengine import Document, StringField
 
 
 # pylint: disable=R0913
@@ -24,38 +22,21 @@ class State(Enum):
         raise ValueError("Value not allowed.")
 
 
-class Article(db.Model):
+class Article(Document):
     """
     Model for Articles
     """
 
-    # pylint: disable=R0903
-    id: Mapped[str] = db.Column(db.String, primary_key=True)
-    title: Mapped[str] = db.Column(db.String, nullable=False)
-    link: Mapped[str] = db.Column(db.String, nullable=False)
-    content: Mapped[str] = db.Column(db.String, nullable=False)
-    summary: Mapped[str] = db.Column(db.String, nullable=True)
-    state: Mapped[str] = db.Column(
-        db.String, nullable=False, default=State.UNREAD.value
-    )
-    summary_translation: Mapped[str] = db.Column(db.String, nullable=True)
+    title = StringField(required=True)
+    link = StringField(required=True)
+    content = StringField(required=True)
+    summary = StringField()
+    state = StringField(default=State.UNREAD.value)
+    summary_translation = StringField()
 
-    def __init__(
-        self,
-        title,
-        link: str,
-        content,
-        summary=None,
-        state: State = None,
-        summary_translation=None,
-    ):
-        self.id = hashlib.md5(link.encode("utf-8")).hexdigest()
-        self.title = title
-        self.link = link
-        self.content = content
-        self.summary = summary
-        self.state = state
-        self.summary_translation = summary_translation
+    @classmethod
+    def new(cls, title, link, content):
+        return Article(title=title, link=link, content=content)
 
 
 article_model = api.model(
