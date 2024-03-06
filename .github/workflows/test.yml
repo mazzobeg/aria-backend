@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: Testing
+name: Testing[WIP]
 
 on:
   push:
@@ -36,9 +36,6 @@ jobs:
         coverage run -m pytest
         coverage report -m
         echo "coverage_score=$(coverage report -m | awk 'END{print$4}')" >> "${GITHUB_OUTPUT}"
-        - uses: actions/checkout@v4
-        with:
-          ref: badges
 
     - name: Extract branch name
       shell: bash
