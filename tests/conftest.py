@@ -17,6 +17,7 @@ def test_app():
         {
             "TESTING": True,
             "MONGO_URI": "mongodb://localhost:27017/aria_test",
+            "OLLAMA_URL": "http://localhost:11434",
         }
     )
     yield app

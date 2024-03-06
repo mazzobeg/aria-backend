@@ -99,5 +99,6 @@ def test_execute_summarize(test_app):
     with open(file_path, "r") as f:
         content = f.read()
         articles = Article.new("", "", content)
-        response = execute_summarize(articles)
-        assert response == "summary"
+        with test_app.app_context():
+            response = execute_summarize(articles)
+            assert response == "summary"
