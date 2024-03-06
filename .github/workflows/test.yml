@@ -45,6 +45,8 @@ jobs:
     - name: Prepare badge
       id: prepare
       run: |
+        git fetch 
+        git checkout badges
         echo "coverage_badge_path=${{steps.extract_branch.outputs.branch}}" >> "${GITHUB_OUTPUT}"
         mkdir -p ${{steps.extract_branch.outputs.branch}}
 
