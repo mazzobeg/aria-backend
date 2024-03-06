@@ -1,13 +1,19 @@
-FROM python:3.10.12-slim
+FROM python:3.9.5-slim
+
+RUN pip install poetry
 
 RUN mkdir /app
+RUN mkdir /config
 
-COPY /dist/aria_backend-0.1.0.tar.gz /app
-COPY /config/docker.py /app
+COPY /src /app/src
+COPY pyproject.toml /app
 
 WORKDIR /app
 
-RUN pip install aria_backend-0.1.0.tar.gz
-RUN rm aria_backend-0.1.0.tar.gz
+RUN poetry build
 
-CMD ["aria-backend", "-c", "/app/docker.py"]
+WORKDIR /app/dist
+
+RUN pip install aria_backend-0.1.0.tar.gz
+
+CMD ["aria-backend" , "-c", "/config/config.json"]
