@@ -2,6 +2,7 @@ from .models import Article
 import requests
 import logging as log
 from bson import ObjectId
+from flask import current_app
 
 
 def add_article(article: Article) -> Article:
@@ -42,14 +43,15 @@ def update_article(article: Article):
 
 def summarize(article: Article):
     result = execute_summarize(article)
-    article = get_article(article.title)
+    article = get_article(article.id)
     article.summary = result
     update_article(article)
 
 
 def execute_summarize(article: Article):
     content = article.content
-    url = "http://localhost:11434/api/generate"
+    address = current_app.config["OLLAMA_URL"]
+    url = f"{address}/api/generate"
 
     data = {
         "model": "llama2",
@@ -76,22 +78,17 @@ SUMMARY:
 
 def translate(article: Article):
     result = execute_translation(article)
-    # db.session.query(Article).filter_by(title=article.title).update(
-    #     {Article.summary_translation: result}
-    # )
-    # db.session.commit()
-    article = MONGO.db.articles.find_one({"title": article.title})
+    article = get_article(article.id)
     article.summary_translation = result
-    MONGO.db.articles.update_one(
-        {"title": article.title}, {"$set": {"summary_translation": result}}
-    )
+    update_article(article)
 
 
 def execute_translation(article: Article):
     if article.summary is None:
         log.warning("Article has no summary")
         return ""
-    url = "http://localhost:11434/api/generate"
+    address = current_app.config["OLLAMA_URL"]
+    url = f"{address}/api/generate"
     data = {
         "model": "frenchy",
         "prompt": f"${article.summary}",
