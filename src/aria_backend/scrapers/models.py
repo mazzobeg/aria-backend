@@ -26,6 +26,7 @@ class Scraper(Document):
 scraper_model = api.model(
     "Scraper",
     {
+        "id": fields.String(required=False),
         "name": fields.String(required=True),
         "content": fields.String(required=True),
         "kwargs": fields.String(required=False),

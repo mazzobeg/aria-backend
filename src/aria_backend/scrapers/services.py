@@ -3,6 +3,7 @@ from .models import Scraper
 from ..articles.services import add_article
 import json
 import logging as log
+from ..articles.models import Article
 
 
 def get_scrapers() -> list[Scraper]:
@@ -10,7 +11,8 @@ def get_scrapers() -> list[Scraper]:
     Returns:
         list[Scraper]: List of all scrapers
     """
-    return Scraper.objects()
+    scrapers = Scraper.objects.all()
+    return list(scrapers)
 
 
 def get_scraper(name) -> Scraper:
@@ -60,5 +62,8 @@ def execute_scraper(scraper: Scraper):
         log.warning("No articles found")
         return
     for article in result["result"]:
-        add_article(article["title"], article["link"], article["content"])
+        article_as_object = Article.new(
+            article["title"], article["link"], article["content"]
+        )
+        add_article(article_as_object)
     return result
