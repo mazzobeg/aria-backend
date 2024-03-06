@@ -64,11 +64,5 @@ jobs:
         git config --local user.name "GitHub Action"
         git add ${{ steps.prepare.outputs.coverage_badge_path }}
         git commit -m "Add coverage badge"
-
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: badges
-
+        git push
   
