@@ -4,7 +4,7 @@ aria_backend package initialization.
 
 __version__ = "0.1.0"
 
-from flask import Flask
+from flask import Flask, render_template
 from .extensions import API
 import click
 from flask.cli import with_appcontext
@@ -17,17 +17,14 @@ from mongoengine import connect
 log.basicConfig(level=log.DEBUG)
 
 
-def create_app(config_test=None):
+def create_app(config_as_dict):
     """
     Application factory function.
     """
     app = Flask(__name__)
     CORS(app)  # TODO remove this in production
 
-    if not config_test:
-        app.config.from_pyfile("config.py", silent=False)
-    else:
-        app.config.update(config_test)
+    app.config.update(config_as_dict)
 
     connect(host=app.config["MONGO_URI"])
 
